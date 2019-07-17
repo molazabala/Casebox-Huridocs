@@ -1,0 +1,31 @@
+# Security configurations
+security:
+    encoders:
+        Casebox\CoreBundle\Entity\UsersGroups: sha512
+
+    providers:
+        db_provider:
+            entity: { class: Casebox\CoreBundle\Entity\UsersGroups, property: email }
+
+    firewalls:
+        static:
+            pattern: ^/(css|images|js)/
+            security: false
+
+        webdav:
+            pattern: ^/dav/*
+            anonymous: ~
+            http_basic:  ~
+            provider: db_provider
+            security: true
+
+        main:
+            anonymous: ~
+
+    access_control:
+        - { path: ^/dav/*, roles: ROLE_USER }
+
+    role_hierarchy:
+        ROLE_USER: ROLE_USER
+        ROLE_ADMIN: ROLE_USER
+        ROLE_SUPER_ADMIN: [ ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
